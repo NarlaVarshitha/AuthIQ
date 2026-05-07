@@ -1,99 +1,78 @@
-<<<<<<< HEAD
-# AuthIQ: Digital Trust Intelligence Platform
+# AuthIQ — E-Commerce Fraud Intelligence Platform
+> Shop Smart. Shop Authenticated. 🇮🇳
 
-![AuthIQ Banner](https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200&h=400)
-
-AuthIQ is an advanced verification ecosystem designed to restore trust in digital commerce. By leveraging the **Digital Commerce Trust Index (DCTI)**, AuthIQ provides a real-time transparency score for e-commerce platforms, helping consumers avoid scams while enabling legitimate sellers to build credibility.
-
----
-
-## 🚀 Key Features
-
-### 🛡️ For Consumers (Trust Checker)
-
-- Real-time URL and website scanning
-- DCTI trust score analysis
-- AI-powered fraud and scam detection
-- Detection of suspicious behavioral patterns
-- Crowdsourced scam reporting system
-- Security and reputation insights
-
-### 🏪 For Sellers (Verification Hub)
-
-- Trust improvement roadmap
-- Verified digital trust badge
-- Business document verification
-- Store credibility optimization suggestions
-- Seller trust analytics dashboard
-
-### 🛠️ For Developers (API)
-
-- Domain trust verification APIs
-- Scam intelligence feed
-- REST API integration support
-- Third-party security integration capabilities
-
----
-
-## 💻 Tech Stack
-
-### Frontend
-- HTML5
-- CSS3
-- JavaScript
-- Glassmorphism UI Design
-
-### Backend
-- Node.js
-- Express.js
-- TypeScript
-
-### Security
-- CSRF Protection
-- URL Sanitization
-- SSL/TLS Verification
-- Trust Scoring Algorithms
-
-### Development Tools
-- Vite
-- npm
-- tsx
-
----
-
-## ⚙️ Installation & Setup
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm or yarn
-
----
-
-### Clone the Repository
+## Quick Start
 
 ```bash
-git clone https://github.com/NarlaVarshitha/AuthIQ.git
-cd AuthIQ
-=======
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 1. Install dependencies
+pip install -r requirements.txt
 
-# Run and deploy your AI Studio app
+# 2. Start MongoDB (in a separate terminal)
+mongod
 
-This contains everything you need to run your app locally.
+# 3. Run the app
+python app.py
+# → http://127.0.0.1:5000
+```
 
-View your app in AI Studio: https://ai.studio/apps/2ecc6597-7677-4b9f-99a2-5014153c31c4
+## Verify in MongoDB Compass
+- Connect: `mongodb://localhost:27017`
+- DB: `authiq`
+- Collections: `users`, `sellers`, `websites`, `reports`
+- Admin auto-seeded: `admin@authiq.in` / `admin123`
 
-## Run Locally
+## Features
 
-**Prerequisites:**  Node.js
+| Route | Description |
+|-------|-------------|
+| `/` | Landing + URL Risk Scanner |
+| `/risk` (POST) | Risk score API — `{"url": "..."}` → `{"score", "level", "reasons"}` |
+| `/seller` | Seller badge/QR registration |
+| `/verify/<id>` | Public seller verification page (linked from QR) |
+| `/qr/<id>` | Download QR badge image |
+| `/report` (POST) | Report a scam site |
+| `/login` `/register` `/logout` | Auth |
+| `/admin` | Admin dashboard (login required) |
+| `/risk/test` | Test the risk engine with sample URLs |
 
+## Test the Risk Engine
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
->>>>>>> 3bdcd4d (Initial commit)
+```bash
+# Via browser
+http://127.0.0.1:5000/risk/test
+
+# Via curl
+curl -X POST http://127.0.0.1:5000/risk \
+  -H "Content-Type: application/json" \
+  -d '{"url": "free-iphone-win.xyz"}'
+# → {"score": 5, "level": "Dangerous", "reasons": [...]}
+
+curl -X POST http://127.0.0.1:5000/risk \
+  -H "Content-Type: application/json" \
+  -d '{"url": "flipkart.com"}'
+# → {"score": 96, "level": "Low", ...}
+```
+
+## Risk Score Signals (12+)
+- Domain age (WHOIS mock → real with `python-whois`)
+- Suspicious TLD (.xyz, .tk, .ml, .ga, .cf...)
+- Scam keywords in URL
+- Missing Privacy Policy / Contact / About / Refund pages
+- Numeric strings in domain
+- Excessive hyphens
+- Domain length
+
+## Deploy to Render
+
+1. Push to GitHub
+2. New Web Service → connect repo
+3. Set env var: `MONGO_URI=mongodb+srv://...` (MongoDB Atlas free tier)
+4. Build: `pip install -r requirements.txt`
+5. Start: `python app.py`
+
+## Stack
+- **Backend**: Flask + Flask-Login + Flask-PyMongo
+- **Database**: MongoDB (local dev → Atlas in prod)
+- **Frontend**: Bootstrap 5 + vanilla JS + custom CSS
+- **Security**: bcrypt password hashing, Flask sessions
+- **QR**: `qrcode[pil]` library

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — AuthIQ{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2 class="iq-auth-title mb-0">Admin Dashboard</h2>
+    <span class="iq-badge-pill">{{ current_user.email }}</span>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md-3">
+      <div class="iq-stat-card">
+        <div class="iq-stat-num">{{ stats.total_sellers }}</div>
+        <div class="iq-stat-lbl">Total Sellers</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="iq-stat-card" style="border-color:#22c55e">
+        <div class="iq-stat-num" style="color:#22c55e">{{ stats.verified_sellers }}</div>
+        <div class="iq-stat-lbl">Verified</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="iq-stat-card" style="border-color:#ef4444">
+        <div class="iq-stat-num" style="color:#ef4444">{{ stats.total_reports }}</div>
+        <div class="iq-stat-lbl">Reports</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="iq-stat-card" style="border-color:#6366f1">
+        <div class="iq-stat-num" style="color:#6366f1">{{ stats.total_checks }}</div>
+        <div class="iq-stat-lbl">URLs Checked</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sellers Table -->
+  <div class="iq-checker-card mb-4">
+    <div class="iq-checker-header">🏅 Seller Applications</div>
+    <div class="table-responsive">
+      <table class="table iq-table mb-0">
+        <thead>
+          <tr><th>Business</th><th>GST</th><th>Email</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for s in sellers %}
+          <tr id="seller-row-{{ s._id }}">
+            <td><strong>{{ s.name }}</strong></td>
+            <td><code>{{ s.gst }}</code></td>
+            <td>{{ s.email }}</td>
+            <td>
+              {% if s.verified %}
+                <span class="iq-level-badge level-low">✓ Verified</span>
+              {% else %}
+                <span class="iq-level-badge level-medium">Pending</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm iq-btn-primary" onclick="approveSeller('{{ s._id }}')">Approve</button>
+                <button class="btn btn-sm iq-btn-danger" onclick="rejectSeller('{{ s._id }}')">Reject</button>
+                <a href="/qr/{{ s._id }}" target="_blank" class="btn btn-sm iq-btn-outline">QR</a>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-3">No sellers yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Reports Table -->
+  <div class="iq-checker-card">
+    <div class="iq-checker-header">🚩 Scam Reports</div>
+    <div class="table-responsive">
+      <table class="table iq-table mb-0">
+        <thead>
+          <tr><th>URL</th><th>Description</th><th>UPI</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          {% for r in reports %}
+          <tr>
+            <td class="text-truncate" style="max-width:180px">
+              <a href="{{ r.website_url }}" target="_blank" rel="noopener">{{ r.website_url }}</a>
+            </td>
+            <td>{{ r.desc }}</td>
+            <td>{{ r.upi or '—' }}</td>
+            <td><small>{{ r.reported_at.strftime('%d %b %Y') if r.reported_at else '—' }}</small></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-muted py-3">No reports yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function approveSeller(id) {
+  const res = await fetch(`/admin/approve/${id}`, {method:'POST'});
+  const data = await res.json();
+  if (data.success) {
+    const row = document.getElementById('seller-row-' + id);
+    row.querySelector('td:nth-child(4)').innerHTML = '<span class="iq-level-badge level-low">✓ Verified</span>';
+  }
+}
+async function rejectSeller(id) {
+  if (!confirm('Delete this seller?')) return;
+  const res = await fetch(`/admin/reject/${id}`, {method:'POST'});
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('seller-row-' + id).remove();
+  }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Seller Registration — AuthIQ{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="iq-checker-card">
+        <div class="iq-checker-header">
+          🏅 Seller Trust Badge Registration
+        </div>
+        <div class="iq-checker-body">
+          <p class="text-muted mb-4">
+            Register your business with AuthIQ. After admin verification, you'll receive a 
+            <strong>Trust Badge</strong> and <strong>QR Code</strong> to display on your storefront — 
+            instantly boosting buyer confidence.
+          </p>
+
+          <div class="iq-how-row mb-4">
+            <div class="iq-mini-step"><span>1</span> Fill form</div>
+            <div class="iq-mini-arrow">→</div>
+            <div class="iq-mini-step"><span>2</span> Get QR</div>
+            <div class="iq-mini-arrow">→</div>
+            <div class="iq-mini-step"><span>3</span> Admin verifies</div>
+            <div class="iq-mini-arrow">→</div>
+            <div class="iq-mini-step active"><span>4</span> Badge live!</div>
+          </div>
+
+          <form method="POST" action="/seller">
+            <div class="mb-3">
+              <label class="iq-input-label">Business / Shop Name *</label>
+              <input type="text" name="name" class="iq-url-input w-100" placeholder="Sharma Electronics" required/>
+            </div>
+            <div class="mb-3">
+              <label class="iq-input-label">GST Number * <small class="text-muted">(15 characters)</small></label>
+              <input type="text" name="gst" class="iq-url-input w-100" placeholder="27AAPFU0939F1ZV"
+                maxlength="15" minlength="15" required style="text-transform:uppercase;letter-spacing:1px"/>
+            </div>
+            <div class="mb-3">
+              <label class="iq-input-label">Business Email *</label>
+              <input type="email" name="email" class="iq-url-input w-100" placeholder="owner@yourshop.com" required/>
+            </div>
+            <div class="mb-3">
+              <label class="iq-input-label">Website URL <small class="text-muted">(optional)</small></label>
+              <input type="text" name="website" class="iq-url-input w-100" placeholder="https://yourshop.com"/>
+            </div>
+            <button type="submit" class="btn iq-btn-primary w-100 mt-2">
+              Register & Get Badge →
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

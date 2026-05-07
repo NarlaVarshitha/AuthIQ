@@ -1,0 +1,10 @@
+flask
+pillow
+flask-pymongo
+flask-login
+bcrypt
+beautifulsoup4
+requests
+python-whois
+qrcode[pil]
+pymongo

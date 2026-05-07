@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}AuthIQ — Shop Smart. Shop Authenticated.{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/authiq.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg iq-nav">
+  <div class="container">
+    <a class="navbar-brand iq-brand" href="/">
+      <span class="iq-logo-shield">⬡</span> Auth<span class="iq-accent">IQ</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto gap-1 align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="/#risk-check">Check URL</a></li>
+        <li class="nav-item"><a class="nav-link" href="/seller">Seller Badge</a></li>
+        {% if current_user.is_authenticated %}
+          {% if current_user.is_admin() %}
+            <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="btn iq-btn-outline btn-sm" href="/logout">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <li class="nav-item"><a class="btn iq-btn-primary btn-sm" href="/register">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="flash-wrapper container mt-2">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }} alert-dismissible fade show py-2" role="alert">
+        {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+{% block content %}{% endblock %}
+
+<footer class="iq-footer mt-5">
+  <div class="container text-center">
+    <span class="iq-logo-shield">⬡</span> <strong>Auth<span class="iq-accent">IQ</span></strong>
+    &nbsp;·&nbsp; Shop Smart. Shop Authenticated.
+    &nbsp;·&nbsp; <small class="text-muted">Made for India 🇮🇳</small>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    ```{% block scripts %}{% endblock %}
+</body>
+</html>

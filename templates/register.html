@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Register — AuthIQ{% endblock %}
+{% block content %}
+<div class="container iq-auth-wrap">
+  <div class="iq-auth-card">
+    <div class="iq-auth-logo"><span class="iq-logo-shield">⬡</span> Auth<span class="iq-accent">IQ</span></div>
+    <h2 class="iq-auth-title">Create Account</h2>
+    <p class="iq-auth-sub">Join AuthIQ to track and report scam sites</p>
+    <form method="POST" action="/register">
+      <div class="mb-3">
+        <label class="iq-input-label">Full Name</label>
+        <input type="text" name="name" class="iq-url-input w-100" placeholder="Rahul Sharma" required/>
+      </div>
+      <div class="mb-3">
+        <label class="iq-input-label">Email</label>
+        <input type="email" name="email" class="iq-url-input w-100" placeholder="you@example.com" required/>
+      </div>
+      <div class="mb-3">
+        <label class="iq-input-label">Password</label>
+        <input type="password" name="password" class="iq-url-input w-100" placeholder="min 6 characters" required minlength="6"/>
+      </div>
+      <button type="submit" class="btn iq-btn-primary w-100 mt-2">Create Account →</button>
+    </form>
+    <p class="text-center mt-3 small">Already have an account? <a href="/login" class="iq-link">Login</a></p>
+  </div>
+</div>
+{% endblock %}

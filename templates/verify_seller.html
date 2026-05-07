@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Verify Seller — AuthIQ{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 text-center">
+      {% if seller %}
+        <div class="iq-checker-card">
+          {% if seller.verified %}
+            <div class="iq-success-icon">✅</div>
+            <h2 class="iq-auth-title mt-2" style="color:#22c55e">Verified Seller</h2>
+            <p class="text-muted">This seller has been verified by AuthIQ</p>
+          {% else %}
+            <div class="iq-success-icon">⏳</div>
+            <h2 class="iq-auth-title mt-2" style="color:#f59e0b">Verification Pending</h2>
+            <p class="text-muted">This seller is registered but not yet verified</p>
+          {% endif %}
+          <div class="iq-seller-info-box mt-3 text-start">
+            <div class="row g-2">
+              <div class="col-12"><span class="iq-input-label">Business Name</span><br/><strong>{{ seller.name }}</strong></div>
+              <div class="col-6"><span class="iq-input-label">GST</span><br/><code>{{ seller.gst }}</code></div>
+              <div class="col-6"><span class="iq-input-label">Status</span><br/>
+                {% if seller.verified %}
+                  <span class="iq-level-badge level-low">✓ AuthIQ Verified</span>
+                {% else %}
+                  <span class="iq-level-badge level-medium">Pending</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <a href="/" class="btn iq-btn-outline w-100 mt-4">← Check a URL Instead</a>
+        </div>
+      {% else %}
+        <div class="iq-checker-card">
+          <div class="iq-success-icon">❓</div>
+          <h2 class="iq-auth-title mt-2" style="color:#ef4444">Seller Not Found</h2>
+          <p class="text-muted">This QR code does not match any registered seller.</p>
+          <p class="text-danger"><strong>Be careful — this may be a fake badge!</strong></p>
+          <a href="/" class="btn iq-btn-primary w-100 mt-3">Report This Seller</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

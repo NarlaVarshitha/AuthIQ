@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Badge Ready — AuthIQ{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 text-center">
+      <div class="iq-checker-card">
+        <div class="iq-success-icon">🎉</div>
+        <h2 class="iq-auth-title mt-3">You're Registered!</h2>
+        <p class="text-muted">
+          <strong>{{ seller.name }}</strong> has been submitted for verification.
+          Your AuthIQ QR Badge is ready to download.
+        </p>
+
+        <div class="iq-qr-wrap my-4">
+          <img src="/qr/{{ seller_id }}" alt="AuthIQ QR Badge" class="iq-qr-img"/>
+          <div class="iq-qr-label">Scan to verify this seller</div>
+        </div>
+
+        <div class="iq-seller-info-box mb-4">
+          <div class="row text-start g-2">
+            <div class="col-6"><span class="iq-input-label">Business</span><br/>{{ seller.name }}</div>
+            <div class="col-6"><span class="iq-input-label">GST</span><br/><code>{{ seller.gst }}</code></div>
+            <div class="col-6"><span class="iq-input-label">Status</span><br/>
+              {% if seller.verified %}
+                <span class="iq-level-badge level-low">✓ Verified</span>
+              {% else %}
+                <span class="iq-level-badge level-medium">⏳ Pending Review</span>
+              {% endif %}
+            </div>
+            <div class="col-6"><span class="iq-input-label">Email</span><br/>{{ seller.email }}</div>
+          </div>
+        </div>
+
+        <a href="/qr/{{ seller_id }}" download="authiq-badge-{{ seller_id }}.png"
+           class="btn iq-btn-primary w-100 mb-3">
+          <i class="bi bi-download"></i> Download QR Badge
+        </a>
+        <a href="/" class="btn iq-btn-outline w-100">← Check Another URL</a>
+
+        <div class="iq-info-note mt-4">
+          <i class="bi bi-info-circle"></i>
+          An admin will review and verify your listing within 24–48 hours. 
+          Once verified, your badge turns green on the public verify page.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
