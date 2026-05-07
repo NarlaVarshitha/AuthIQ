@@ -1,0 +1,251 @@
+<!-- contact.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | AuthIQ Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --secondary-blue: #1d4ed8;
+            --accent-blue: #eff6ff;
+            --light-bg: #f8fafc;
+            --gray-text: #64748b;
+            --dark-text: #0f172a;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --header-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme="dark"] {
+            --light-bg: #020617;
+            --gray-text: #94a3b8;
+            --dark-text: #f8fafc;
+            --white: #0f172a;
+            --border-color: #1e293b;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --accent-blue: #1e293b;
+            --header-bg: rgba(15, 23, 42, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--light-bg); 
+            color: var(--gray-text); 
+            line-height: 1.6; 
+            transition: all 0.3s ease;
+        }
+
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 2rem; }
+
+        header {
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--gray-text); font-weight: 600; transition: color 0.2s; font-size: 0.9375rem; }
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .theme-toggle { background: var(--white); border: 1px solid var(--border-color); color: var(--gray-text); padding: 0.5rem; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .theme-toggle:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+
+        .hero-section { padding: 6rem 0 4rem; text-align: center; }
+        .hero-section h1 { font-size: 3.5rem; font-weight: 800; color: var(--dark-text); margin-bottom: 1rem; letter-spacing: -0.05em; }
+        .hero-section p { font-size: 1.25rem; color: var(--gray-text); max-width: 700px; margin: 0 auto; }
+
+        .contact-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; margin-bottom: 8rem; }
+
+        .form-card { background: var(--white); border: 1px solid var(--border-color); padding: 3rem; border-radius: 1.5rem; box-shadow: var(--card-shadow); }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--dark-text); font-size: 0.9375rem; }
+        input, textarea, select { width: 100%; padding: 0.875rem 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); background: var(--light-bg); color: var(--dark-text); font-family: inherit; font-size: 1rem; transition: all 0.2s; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+        .btn { width: 100%; padding: 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 0.75rem; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+        .btn:hover { background: var(--secondary-blue); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
+
+        .details-col h2 { font-size: 1.75rem; color: var(--dark-text); margin-bottom: 2rem; font-weight: 800; }
+        .info-card { background: var(--white); border: 1px solid var(--border-color); padding: 1.75rem; border-radius: 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 1.5rem; transition: transform 0.3s; }
+        .info-card:hover { transform: translateX(8px); border-color: var(--primary-blue); }
+        
+        .icon-box { width: 48px; height: 48px; min-width: 48px; background: var(--accent-blue); color: var(--primary-blue); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+        .info-content h4 { font-size: 1.125rem; color: var(--dark-text); margin-bottom: 0.25rem; font-weight: 700; }
+        .info-content p { font-size: 1rem; color: var(--gray-text); }
+
+        footer { background: var(--white); border-top: 1px solid var(--border-color); padding: 4rem 0; }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; }
+        .footer-links { display: flex; gap: 2rem; list-style: none; }
+        .footer-links a { text-decoration: none; color: var(--gray-text); font-size: 0.875rem; }
+        .footer-links a:hover { color: var(--primary-blue); }
+
+        @media (max-width: 968px) {
+            .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .hero-section h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    AuthIQ
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="user-dashboard.html">Checker</a></li>
+                    <li><a href="seller-dashboard.html">For Sellers</a></li>
+                    <li><a href="api-docs.html">API Docs</a></li>
+                    <li>
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                            <svg class="sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+                            <svg class="moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-section">
+            <h1>Let's build digital trust.</h1>
+            <p>Our team of trust intelligence experts is ready to help you secure your transactions and grow your online business presence.</p>
+        </section>
+
+        <div class="contact-grid">
+            <div class="form-col">
+                <div class="form-card">
+                    <form onsubmit="event.preventDefault(); alert('Message sent successfully! Our team will get back to you within 24 hours.')">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" placeholder="Johnathan Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Work Email</label>
+                            <input type="email" id="email" placeholder="john@company.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">How can we help?</label>
+                            <select id="subject">
+                                <option>Scam Report Investigation</option>
+                                <option>Seller Verification Inquiry</option>
+                                <option>Enterprise API Access</option>
+                                <option>Technical Integration Support</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" rows="5" placeholder="Describe your inquiry in detail..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Send Inquiry</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="details-col">
+                <h2>Contact Information</h2>
+                
+                <div class="info-card">
+                    <div class="icon-box">✉️</div>
+                    <div class="info-content">
+                        <h4>Global Support</h4>
+                        <p>support@authiq.com</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon-box">📞</div>
+                    <div class="info-content">
+                        <h4>Direct Line</h4>
+                        <p>+91 (40) 2344-XXXX</p>
+                        <p style="font-size: 0.8rem; opacity: 0.7;">Mon - Fri, 9 AM - 6 PM IST</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon-box">📍</div>
+                    <div class="info-content">
+                        <h4>Innovation Hub</h4>
+                        <p> HITEC City, Phase 2</p>
+                        <p>Hyderabad, TS 500081</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="icon-box">🛟</div>
+                    <div class="info-content">
+                        <h4>Help Center</h4>
+                        <p>Browse our documentation and tutorials.</p>
+                        <a href="api-docs.html" style="font-size: 0.875rem;">Visit Docs →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2026 AuthIQ Inc. All rights reserved.</p>
+            <ul class="footer-links">
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = themeToggle.querySelector('.sun');
+        const moonIcon = themeToggle.querySelector('.moon');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateIcons(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcons(newTheme);
+        });
+
+        function updateIcons(theme) {
+            if (theme === 'dark') {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            } else {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
+

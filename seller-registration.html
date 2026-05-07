@@ -1,0 +1,627 @@
+<!-- seller-registration.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Verification | AuthIQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --secondary-blue: #1d4ed8;
+            --accent-blue: #eff6ff;
+            --light-bg: #f8fafc;
+            --gray-text: #64748b;
+            --dark-text: #0f172a;
+            --success-green: #10b981;
+            --warning-amber: #f59e0b;
+            --danger-red: #ef4444;
+            --white: #ffffff;
+            --sidebar-bg: #ffffff;
+            --sidebar-text: #64748b;
+            --sidebar-active-bg: #eff6ff;
+            --sidebar-active-text: #2563eb;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --light-bg: #020617;
+            --gray-text: #94a3b8;
+            --dark-text: #f8fafc;
+            --white: #0f172a;
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active-bg: #1e293b;
+            --sidebar-active-text: #3b82f6;
+            --border-color: #1e293b;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --accent-blue: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--light-bg); 
+            color: var(--gray-text); 
+            display: flex; 
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            margin-bottom: 3.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem;
+            color: var(--primary-blue); 
+            text-decoration: none; 
+        }
+
+        .side-nav { list-style: none; flex: 1; }
+        .side-nav li { margin-bottom: 0.5rem; }
+        .side-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1.25rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+        .side-nav a:hover, .side-nav a.active {
+            background: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .sidebar-footer { padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+        .theme-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--accent-blue);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            color: var(--sidebar-active-text);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 4rem;
+            max-width: 1400px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        header { grid-column: span 2; margin-bottom: 1rem; }
+        header h1 { font-size: 2.25rem; font-weight: 800; color: var(--dark-text); letter-spacing: -0.05em; margin-bottom: 0.5rem; }
+        header p { font-size: 1.125rem; color: var(--gray-text); }
+
+        /* Multi-step Logic */
+        .registration-flow { background: var(--white); border: 1px solid var(--border-color); border-radius: 2rem; padding: 3.5rem; box-shadow: var(--card-shadow); }
+
+        .progress-stepper { display: flex; justify-content: space-between; margin-bottom: 4rem; position: relative; }
+        .progress-stepper::before { content: ""; position: absolute; top: 15px; left: 0; right: 0; height: 3px; background: var(--border-color); z-index: 1; border-radius: 999px; }
+        .progress-bar { position: absolute; top: 15px; left: 0; height: 3px; background: var(--primary-blue); z-index: 2; transition: width 0.4s ease; width: 0%; border-radius: 999px; }
+
+        .step-indicator { 
+            position: relative; 
+            z-index: 3; 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            background: var(--white); 
+            border: 3px solid var(--border-color); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700; 
+            font-size: 0.8rem; 
+            color: var(--gray-text);
+            transition: all 0.3s ease;
+        }
+        .step-indicator.active { border-color: var(--primary-blue); background: var(--primary-blue); color: white; }
+        .step-indicator.done { border-color: var(--primary-blue); background: var(--primary-blue); color: white; }
+
+        .form-step { display: none; }
+        .form-step.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title { font-size: 1.5rem; font-weight: 800; color: var(--dark-text); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; }
+        .section-number { background: var(--accent-blue); color: var(--primary-blue); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.125rem; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .full-width { grid-column: span 2; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        label { font-size: 0.875rem; font-weight: 600; color: var(--dark-text); }
+        input, select, textarea { 
+            padding: 0.875rem 1.25rem; 
+            border-radius: 0.75rem; 
+            border: 1px solid var(--border-color); 
+            background: var(--light-bg); 
+            color: var(--dark-text); 
+            font-family: inherit; 
+            font-size: 1rem; 
+            transition: all 0.2s; 
+        }
+        input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        
+        .helper-text { font-size: 0.75rem; color: var(--gray-text); margin-top: 0.25rem; line-height: 1.4; }
+        .secure-note { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 1rem; border-radius: 0.75rem; font-size: 0.875rem; margin-bottom: 1.5rem; display: flex; gap: 0.5rem; }
+
+        .file-upload { border: 2px dashed var(--border-color); padding: 2rem; border-radius: 1rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--light-bg); }
+        .file-upload:hover { border-color: var(--primary-blue); background: var(--accent-blue); }
+
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color); }
+        .btn { padding: 0.875rem 1.5rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.9375rem; border: none; }
+        .btn-primary { background: var(--primary-blue); color: white; }
+        .btn-primary:hover { background: var(--secondary-blue); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3); }
+        .btn-outline { background: transparent; color: var(--gray-text); border: 1px solid var(--border-color); }
+        .btn-outline:hover { background: var(--light-bg); color: var(--dark-text); }
+
+        /* Summary Panel */
+        .summary-panel { position: sticky; top: 4rem; }
+        .summary-card { background: var(--white); border: 1px solid var(--border-color); border-radius: 1.5rem; padding: 2.5rem; box-shadow: var(--card-shadow); }
+        .summary-card h3 { font-size: 1.125rem; font-weight: 800; color: var(--dark-text); margin-bottom: 1.5rem; }
+        
+        .review-list { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+        .review-item { display: flex; flex-direction: column; gap: 0.25rem; }
+        .review-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-text); }
+        .review-value { font-size: 0.9375rem; font-weight: 600; color: var(--dark-text); min-height: 1.2em; }
+        .review-value:empty::after { content: "Not provided"; color: #cbd5e1; font-style: italic; font-weight: 400; }
+
+        .trust-badge-preview { 
+            margin-top: 2.5rem; 
+            padding: 1.5rem; 
+            background: linear-gradient(135deg, #1e293b, #0f172a); 
+            border-radius: 1rem; 
+            text-align: center; 
+            color: white; 
+        }
+        .badge-icon { background: var(--primary-blue); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+
+        /* SUCCESS MODAL */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-body { background: var(--white); padding: 4rem; border-radius: 2rem; max-width: 500px; width: 90%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .success-icon { width: 80px; height: 80px; background: #dcfce7; color: #166534; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 2.5rem; }
+
+        @media (max-width: 1100px) { main { grid-template-columns: 1fr; padding: 2rem; } .summary-panel { display: none; } }
+        @media (max-width: 768px) { 
+            aside { transform: translateX(-100%); } 
+            main { margin-left: 0; } 
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .mobile-toggle { display: block !important; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <button class="mobile-toggle" id="mobileToggle" style="display: none; position: fixed; top: 1.5rem; left: 1.5rem; z-index: 100; background: var(--white); border: 1px solid var(--border-color); padding: 0.5rem; border-radius: 0.5rem; cursor: pointer;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+
+    <aside id="sidebar">
+        <a href="index.html" class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            AuthIQ
+        </a>
+        <ul class="side-nav">
+            <li><a href="seller-dashboard.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Overview</a></li>
+            <li><a href="seller-registration.html" class="active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Registration</a></li>
+            <li><a href="seller-registration.html#step3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Documents</a></li>
+            <li><a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Review Status</a></li>
+            <li><a href="user-dashboard.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Trust Checker</a></li>
+            <li><a href="api-docs.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg> API Access</a></li>
+            <li><a href="report-scam.html" style="color: var(--danger-red);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Report a Scam</a></li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeText">Switch to Light</span>
+            </button>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <h1>Merchant Verification Portal</h1>
+            <p>Establish your digital trust index by verifying your business identity.</p>
+        </header>
+
+        <div class="registration-flow">
+            <div class="progress-stepper">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="step-indicator active" data-step="1">1</div>
+                <div class="step-indicator" data-step="2">2</div>
+                <div class="step-indicator" data-step="3">3</div>
+                <div class="step-indicator" data-step="4">4</div>
+                <div class="step-indicator" data-step="5">5</div>
+            </div>
+
+            <form id="regForm">
+                <!-- STEP 1: Basic Business Details -->
+                <div class="form-step active" id="step1">
+                    <div class="section-title">
+                        <div class="section-number">1</div>
+                        Business Identity
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="bizName">Legal Business Name*</label>
+                            <input type="text" id="bizName" name="bizName" placeholder="e.g. Organic Gurus Private Limited" required>
+                            <span class="helper-text">As it appears on your registration documents.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="storeName">Brand/Store Name*</label>
+                            <input type="text" id="storeName" name="storeName" placeholder="e.g. Organic Gurus" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bizType">Business Type*</label>
+                            <select id="bizType" name="bizType" required>
+                                <option value="">Select Type</option>
+                                <option>Sole Proprietorship</option>
+                                <option>Partnership</option>
+                                <option>Private Limited</option>
+                                <option>Individual Seller</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Contact Details -->
+                <div class="form-step" id="step2">
+                    <div class="section-title">
+                        <div class="section-number">2</div>
+                        Contact Information
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="email">Business Email*</label>
+                            <input type="email" id="email" name="email" placeholder="hello@company.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number*</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="address">Registered Office Address*</label>
+                            <textarea id="address" name="address" rows="3" placeholder="Full physical address..." required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Verification Documents -->
+                <div class="form-step" id="step3">
+                    <div class="section-title">
+                        <div class="section-number">3</div>
+                        Verification Credentials
+                    </div>
+                    <div class="secure-note">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <strong>Secure Encryption:</strong> All sensitive documents are encrypted at rest and only accessible by authorized auditors.
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="gst">GST Number*</label>
+                            <input type="text" id="gst" name="gst" placeholder="22AAAAA0000A1Z5" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pan">Business PAN*</label>
+                            <input type="text" id="pan" name="pan" placeholder="ABCDE1234F" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Upload GST Certificate*</label>
+                            <div class="file-upload">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--primary-blue)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                <p style="margin-top: 1rem; font-weight: 600; color: var(--dark-text);">Drag & drop or <span style="color: var(--primary-blue)">browse</span></p>
+                                <p style="font-size: 0.8rem; color: var(--gray-text);">PDF, JPG or PNG (Max 5MB)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Store & Policy Details -->
+                <div class="form-step" id="step4">
+                    <div class="section-title">
+                        <div class="section-number">4</div>
+                        Store & Policy Details
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="siteUrl">Store Website URL*</label>
+                            <input type="url" id="siteUrl" name="siteUrl" placeholder="https://www.yourstore.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="platform">Hosting Platform*</label>
+                            <select id="platform" name="platform" required>
+                                <option value="">Select Platform</option>
+                                <option>Shopify</option>
+                                <option>WooCommerce</option>
+                                <option>Magento</option>
+                                <option>Custom Build</option>
+                                <option>Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Store Category*</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <option>Retail & Apparels</option>
+                                <option>Electronics</option>
+                                <option>Natural & Organic</option>
+                                <option>SaaS/Service</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="returnPolicy">Link to Refund/Return Policy*</label>
+                            <input type="url" id="returnPolicy" name="returnPolicy" placeholder="https://yourstore.com/refund-policy" required>
+                            <span class="helper-text">Verified stores must have a clear, accessible refund policy.</span>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="privacyPolicy">Link to Privacy Policy*</label>
+                            <input type="url" id="privacyPolicy" name="privacyPolicy" placeholder="https://yourstore.com/privacy-policy" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: Final Review -->
+                <div class="form-step" id="step5">
+                    <div class="section-title">
+                        <div class="section-number">5</div>
+                        Authorization
+                    </div>
+                    <p style="margin-bottom: 2rem;">By submitting this verification request, you authorize AuthIQ to perform a trust assessment based on the data provided.</p>
+                    
+                    <div class="form-group" style="flex-direction: row; align-items: flex-start; gap: 1rem;">
+                        <input type="checkbox" id="consent" style="width: auto; margin-top: 5px;" required>
+                        <label for="consent" style="font-weight: 500; font-size: 0.9375rem;">I declare that all information provided is accurate and I am an authorized representative of this business.</label>
+                    </div>
+
+                    <div style="margin-top: 3rem; background: var(--accent-blue); padding: 2rem; border-radius: 1rem; display: flex; gap: 1.5rem; align-items: center;">
+                        <div style="font-size: 2rem;">🚀</div>
+                        <div>
+                            <h4 style="color: var(--primary-blue); margin-bottom: 0.25rem;">Final Step</h4>
+                            <p style="font-size: 0.875rem; margin-bottom: 0;">Once submitted, the typical verification turnaround time is 24-48 business hours.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button type="button" class="btn btn-outline" id="prevBtn" style="visibility: hidden;">Back</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">Next Step</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="summary-panel">
+            <div class="summary-card">
+                <h3>Verification Summary</h3>
+                <div class="review-list">
+                    <div class="review-item">
+                        <span class="review-label">Business Name</span>
+                        <span class="review-value" id="valBizName"></span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Store Brand</span>
+                        <span class="review-value" id="valStoreName"></span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Store URL</span>
+                        <span class="review-value" id="valSiteUrl"></span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Type</span>
+                        <span class="review-value" id="valType"></span>
+                    </div>
+                </div>
+
+                <div class="trust-badge-preview">
+                    <div class="badge-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Awaiting Verification</div>
+                    <p style="font-size: 0.7rem; opacity: 0.7; margin-top: 0.5rem;">Join thousands of trusted sellers</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-body">
+            <div class="success-icon">✓</div>
+            <h2 style="color: var(--dark-text); font-weight: 800; font-size: 2rem; margin-bottom: 1rem;">Submitted!</h2>
+            <p style="margin-bottom: 2.5rem;">Your application is now being reviewed by our trust intelligence team. You'll receive an email notification shortly.</p>
+            <a href="seller-dashboard.html" class="btn btn-primary" style="display: block; text-decoration: none;">Go to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Toggle logic
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Multi-Step Logic
+        let currentStep = 1;
+        const totalSteps = 5;
+        const form = document.getElementById('regForm');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const progressBar = document.getElementById('progressBar');
+        const indicators = document.querySelectorAll('.step-indicator');
+        const steps = document.querySelectorAll('.form-step');
+
+        function updateStep() {
+            // Update UI
+            steps.forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            // Update Progress
+            const progressWidth = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            progressBar.style.width = `${progressWidth}%`;
+
+            indicators.forEach(ind => {
+                const stepNum = parseInt(ind.dataset.step);
+                ind.classList.remove('active', 'done');
+                if (stepNum === currentStep) ind.classList.add('active');
+                if (stepNum < currentStep) ind.classList.add('done');
+            });
+
+            // Button States
+            prevBtn.style.visibility = (currentStep === 1) ? 'hidden' : 'visible';
+            nextBtn.innerText = (currentStep === totalSteps) ? 'Submit for Verification' : 'Next Step';
+
+            // Sync Summary
+            syncSummary();
+        }
+
+        nextBtn.addEventListener('click', () => {
+            const inputs = document.getElementById(`step${currentStep}`).querySelectorAll('input[required], select[required], textarea[required]');
+            let valid = true;
+            
+            inputs.forEach(input => {
+                let inputValid = true;
+                
+                if (!input.value) {
+                    inputValid = false;
+                } else if (input.type === 'email') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(input.value)) inputValid = false;
+                } else if (input.type === 'tel') {
+                    // Basic check for phone - at least 10 digits
+                    const phoneDigits = input.value.replace(/\D/g, '');
+                    if (phoneDigits.length < 10) inputValid = false;
+                } else if (input.type === 'url') {
+                    try { new URL(input.value); } catch (_) { inputValid = false; }
+                }
+
+                if (!inputValid) {
+                    input.style.borderColor = 'var(--danger-red)';
+                    valid = false;
+                } else {
+                    input.style.borderColor = 'var(--border-color)';
+                }
+            });
+
+            if (valid) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateStep();
+                } else {
+                    document.getElementById('successModal').style.display = 'flex';
+                }
+            } else {
+                alert('Please fill in all required fields to continue.');
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStep();
+            }
+        });
+
+        function syncSummary() {
+            document.getElementById('valBizName').innerText = document.getElementById('bizName').value;
+            document.getElementById('valStoreName').innerText = document.getElementById('storeName').value;
+            document.getElementById('valSiteUrl').innerText = document.getElementById('siteUrl').value;
+            document.getElementById('valType').innerText = document.getElementById('bizType').value;
+        }
+
+        // Add real-time sync
+        form.addEventListener('input', syncSummary);
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        themeText.innerText = savedTheme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeText.innerText = newTheme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+        });
+
+        updateStep();
+
+        // Handle URL Hash for direct step navigation
+        window.addEventListener('load', () => {
+            const hash = window.location.hash;
+            if (hash === '#step3') {
+                currentStep = 3;
+                updateStep();
+            } else if (hash === '#step4') {
+                currentStep = 4;
+                updateStep();
+            }
+        });
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash;
+            if (hash === '#step3') {
+                currentStep = 3;
+                updateStep();
+            } else if (hash === '#step4') {
+                currentStep = 4;
+                updateStep();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,752 @@
+<!-- seller-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard | AuthIQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Theme Variables */
+            --primary-blue: #2563eb;
+            --secondary-blue: #1d4ed8;
+            --accent-blue: #eff6ff;
+            --light-bg: #f8fafc;
+            --gray-text: #64748b;
+            --dark-text: #0f172a;
+            --success-green: #10b981;
+            --warning-amber: #f59e0b;
+            --danger-red: #ef4444;
+            --white: #ffffff;
+            --sidebar-bg: #ffffff;
+            --sidebar-text: #64748b;
+            --sidebar-active-bg: #eff6ff;
+            --sidebar-active-text: #2563eb;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --header-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --sidebar-width: 260px;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --light-bg: #020617;
+            --gray-text: #94a3b8;
+            --dark-text: #f8fafc;
+            --white: #0f172a;
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active-bg: #1e293b;
+            --sidebar-active-text: #3b82f6;
+            --border-color: #1e293b;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+            --header-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --accent-blue: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--light-bg); 
+            color: var(--gray-text); 
+            display: flex; 
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            margin-bottom: 3.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem;
+            color: var(--primary-blue); 
+            text-decoration: none; 
+        }
+
+        .side-nav { list-style: none; flex: 1; }
+        .side-nav li { margin-bottom: 0.5rem; }
+        .side-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1.25rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .side-nav a:hover {
+            background: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .side-nav a.active {
+            background: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .user-details {
+            font-size: 0.875rem;
+        }
+
+        .user-details .name {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .user-details .role {
+            font-size: 0.75rem;
+            color: var(--gray-text);
+        }
+
+        .theme-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--accent-blue);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            color: var(--sidebar-active-text);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Content Area */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2.5rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header-content h1 {
+            color: var(--dark-text);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-content p {
+            font-size: 1rem;
+            color: var(--gray-text);
+        }
+
+        .last-updated {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-text);
+            padding: 0.5rem 1rem;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Card System */
+        .card {
+            background: var(--white);
+            border-radius: 1.25rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Score Section */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+        }
+
+        .score-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            border: none;
+        }
+
+        .score-hero h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-value {
+            font-size: 6rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1rem;
+            letter-spacing: -0.05em;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .score-rank {
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* Parameters Section */
+        .parameters-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 2rem;
+        }
+
+        .param-list {
+            display: grid;
+            gap: 1.75rem;
+        }
+
+        .param-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .param-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .param-name {
+            font-weight: 600;
+            color: var(--dark-text);
+            font-size: 0.9375rem;
+        }
+
+        .param-value {
+            font-weight: 700;
+            font-size: 0.9375rem;
+            color: var(--primary-blue);
+        }
+
+        .progress-wrapper {
+            height: 10px;
+            background: var(--accent-blue);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            border-radius: 9999px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Suggestions Section */
+        .suggestions-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .suggestion-card {
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .suggestion-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .sug-warn { background: #fffbeb; color: #fbbf24; }
+        .sug-check { background: #ecfdf5; color: #10b981; }
+        .sug-info { background: #eff6ff; color: #3b82f6; }
+
+        .suggestion-card h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        .suggestion-card p {
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            color: var(--gray-text);
+        }
+
+        .sug-cta {
+            margin-top: auto;
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Trust Badge Section */
+        .badge-banner {
+            background: var(--dark-text);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .badge-content {
+            z-index: 2;
+            max-width: 60%;
+        }
+
+        .badge-banner h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .badge-banner p {
+            font-size: 1.125rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-primary { background: var(--primary-blue); color: white; }
+        .btn-primary:hover { background: var(--secondary-blue); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
+
+        .btn-white { background: white; color: var(--dark-text); }
+        .btn-white:hover { background: #f1f5f9; transform: translateY(-2px); }
+
+        .badge-illustration {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%) rotate(10deg);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-card {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+        }
+
+        .qr-placeholder {
+            margin: 2.5rem auto;
+            width: 180px;
+            height: 180px;
+            padding: 1rem;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge-code-box {
+            background: var(--accent-blue);
+            color: var(--primary-blue);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-align: left;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1200px) {
+            main { padding: 2rem; }
+            .hero-grid { grid-template-columns: 1fr; }
+            .suggestions-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            aside { transform: translateX(-100%); transition: transform 0.3s ease; }
+            aside.open { transform: translateX(0); }
+            main { margin-left: 0; padding-top: 6rem; }
+            .header-content h1 { font-size: 1.5rem; }
+            .badge-banner { flex-direction: column; text-align: center; padding: 3rem 2rem; }
+            .badge-content { max-width: 100%; }
+            .mobile-toggle { display: block !important; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <button class="mobile-toggle" id="mobileToggle" style="display: none; position: fixed; top: 1.5rem; left: 1.5rem; z-index: 100; background: var(--white); border: 1px solid var(--border-color); padding: 0.5rem; border-radius: 0.5rem; cursor: pointer;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+
+    <aside id="sidebar">
+        <a href="index.html" class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            AuthIQ
+        </a>
+        <ul class="side-nav">
+            <li><a href="seller-dashboard.html" class="active"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Overview</a></li>
+            <li><a href="seller-registration.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Registration</a></li>
+            <li><a href="seller-registration.html#step3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Documents</a></li>
+            <li><a href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Review Status</a></li>
+            <li><a href="user-dashboard.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Trust Checker</a></li>
+            <li><a href="api-docs.html"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg> API Access</a></li>
+            <li><a href="report-scam.html" style="color: var(--danger-red);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Report a Scam</a></li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeText">Switch to Light</span>
+            </button>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <div class="header-content">
+                <h1>Overview</h1>
+                <p>Welcome back! Your store's digital trust is trending up.</p>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <a href="seller-registration.html#step3" class="btn btn-primary" style="padding: 0.6rem 1.25rem; font-size: 0.875rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Upload Document
+                </a>
+                <div class="last-updated">
+                    Last checked: 2:45 PM Today
+                </div>
+            </div>
+        </header>
+
+        <section class="hero-grid">
+            <div class="card score-hero" style="min-height: 480px;">
+                <h3 style="margin-bottom: 0.5rem; opacity: 1; font-size: 1.25rem;">Trust Score Index</h3>
+                <p style="font-size: 0.8125rem; opacity: 0.8; margin-bottom: 2rem;">Real-time transparency assessment</p>
+                
+                <div class="score-value">76</div>
+                
+                <div class="status-pill" style="margin-bottom: 1rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    GOOD STATUS
+                </div>
+                
+                <div class="score-rank">Top 15% in Organic Retail category</div>
+                
+                <div style="margin-top: 3rem; display: flex; flex-direction: column; gap: 0.75rem; width: 100%; max-width: 240px;">
+                    <button class="btn btn-white" style="width: 100%; justify-content: center;" onclick="showBadge()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        Get Trust Badge
+                    </button>
+                    <a href="seller-registration.html" class="btn btn-white" style="width: 100%; justify-content: center; text-decoration: none; opacity: 0.9; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                        Complete Verification
+                    </a>
+                </div>
+            </div>
+
+            <div class="card parameters-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+                    <div>
+                        <h3 style="margin-bottom: 0.25rem;">Verification Pillars</h3>
+                        <p style="font-size: 0.8125rem; color: var(--gray-text);">How your score is calculated</p>
+                    </div>
+                    <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8125rem;">Full Analysis</button>
+                </div>
+                <div class="param-list">
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span class="param-name">Policy Transparency</span>
+                            <span class="param-value">85%</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span class="param-name">Contact Clarity</span>
+                            <span class="param-value">95%</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress-fill" style="width: 95%;"></div>
+                        </div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span class="param-name">Review Authenticity</span>
+                            <span class="param-value">65%</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress-fill" style="width: 65%; background: var(--warning-amber);"></div>
+                        </div>
+                    </div>
+                    <div class="param-item">
+                        <div class="param-header">
+                            <span class="param-name">Technical Security (SSL)</span>
+                            <span class="param-value">100%</span>
+                        </div>
+                        <div class="progress-wrapper">
+                            <div class="progress-fill" style="width: 100%; background: var(--success-green);"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem;">
+                    <div style="background: var(--accent-blue); padding: 0.75rem; border-radius: 50%;">💡</div>
+                    <p style="font-size: 0.875rem; color: var(--gray-text);">Updating your <strong>refund policy</strong> is the fastest way to hit 80+ score.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 class="suggestions-title" style="margin-bottom: 0;">Optimization Roadmap</h3>
+                <a href="#" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8125rem;">Review All Suggestions</a>
+            </div>
+            <div class="suggestions-grid">
+                <div class="card suggestion-card">
+                    <div class="suggestion-icon-box sug-warn">⚠️</div>
+                    <h4>Refund Policy Update</h4>
+                    <p>Your current policy is missing a clear timeframe. Adding a specific "30-day returns" clause can boost your score by +5 points.</p>
+                    <a href="seller-registration.html#step4" class="sug-cta">Fix now →</a>
+                </div>
+                <div class="card suggestion-card">
+                    <div class="suggestion-icon-box sug-check">✅</div>
+                    <h4>GST Verification</h4>
+                    <p>Uploading your GST certificate will move your "Business Legitimacy" rating to 100% and strengthen your rank.</p>
+                    <a href="seller-registration.html#step3" class="sug-cta">Upload document →</a>
+                </div>
+                <div class="card suggestion-card">
+                    <div class="suggestion-icon-box sug-info">📍</div>
+                    <h4>Address Clarity</h4>
+                    <p>Map integration detected a minor mismatch. Ensure your footer address exactly matches your official registration.</p>
+                    <a href="seller-registration.html#step4" class="sug-cta">Review address →</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="card badge-banner">
+            <div class="badge-content">
+                <h2>Deploy Your Trust Badge</h2>
+                <p>Increase checkout conversion rates by up to 14% by displaying your real-time AuthIQ Trust index on your storefront.</p>
+                <button class="btn btn-white" onclick="showBadge()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    Generate Trust Badge
+                </button>
+            </div>
+            <div class="badge-illustration">
+                <svg width="240" height="240" viewBox="0 0 24 24" fill="white"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+        </section>
+    </main>
+
+    <!-- Trust Badge Modal -->
+    <div class="modal-overlay" id="badgeModal">
+        <div class="modal-card">
+            <h2 style="color: var(--dark-text); font-weight: 800; font-size: 1.75rem;">Your Store Merchant Badge</h2>
+            <div class="qr-placeholder">
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="var(--dark-text)" stroke-width="2">
+                    <rect x="2" y="2" width="6" height="6" rx="1"></rect>
+                    <rect x="16" y="2" width="6" height="6" rx="1"></rect>
+                    <rect x="2" y="16" width="6" height="6" rx="1"></rect>
+                    <path d="M12 12h1v1h-1zM15 12h1v1h-1zM12 15h1v1h-1zM18 18h2v2h-2zM15 15h1v1h-1zM12 18h1v1h-1z" fill="currentColor"></path>
+                    <path d="M22 12h-2v2h2zM12 22h2v-2h-2z" fill="currentColor"></path>
+                </svg>
+            </div>
+            <div style="font-weight: 700; color: var(--primary-blue); font-size: 1.125rem; margin-bottom: 0.25rem;">Verified by AuthIQ</div>
+            <div style="font-size: 0.875rem; color: var(--gray-text); margin-bottom: 2rem;">DCTI Index: 76/100</div>
+            
+            <p style="margin-bottom: 1rem; font-size: 0.9375rem; font-weight: 500;">Installation Code</p>
+            <div class="badge-code-box">
+                &lt;script src="https://cdn.authiq.com/badge.js"&gt;&lt;/script&gt;
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="closeBadge()">Done</button>
+        </div>
+    </div>
+
+    <script>
+        // Theme Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const themeText = document.getElementById('themeText');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        themeText.innerText = savedTheme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeText.innerText = newTheme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+        });
+
+        // Mobile Toggle logic
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        function showBadge() {
+            document.getElementById('badgeModal').style.display = 'flex';
+        }
+        function closeBadge() {
+            document.getElementById('badgeModal').style.display = 'none';
+        }
+
+        // Close modal on escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeBadge();
+        });
+
+        // Close modal on overlay click
+        document.getElementById('badgeModal').addEventListener('click', (e) => {
+            if (e.target.id === 'badgeModal') closeBadge();
+        });
+    </script>
+</body>
+</html>
