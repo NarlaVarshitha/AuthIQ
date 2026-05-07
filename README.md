@@ -38,7 +38,7 @@
 ### Quick Start
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/authiq.git
+   git clone https://github.com/NarlaVarshitha/authiq.git
    cd authiq
    ```
 
